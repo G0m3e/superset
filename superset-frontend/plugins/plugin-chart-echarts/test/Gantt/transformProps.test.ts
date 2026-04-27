@@ -29,6 +29,7 @@ import {
 } from '../../src/Gantt/types';
 
 const formData: EchartsGanttFormData = {
+  annotationLayers: [],
   viz_type: 'gantt_chart',
   datasource: '1__table',
 
@@ -49,7 +50,8 @@ const formData: EchartsGanttFormData = {
   zoomable: true,
   xAxisTitleMargin: undefined,
   yAxisTitleMargin: undefined,
-  xAxisTimeBounds: [null, '19:00:00'],
+  xAxisDateZoomOffset: [null, 1],
+  xAxisDateUnit: 'day',
   subcategories: true,
   legendMargin: 0,
   legendOrientation: LegendOrientation.Top,
@@ -112,8 +114,8 @@ describe('Gantt transformProps', () => {
             name: '',
             nameGap: 0,
             nameLocation: 'middle',
-            max: Date.UTC(2025, 1, 1, 19, 0, 0),
-            min: undefined,
+            max: Date.UTC(2025, 1, 1, 20, 0, 0),
+            min: Date.UTC(2025, 1, 1, 13, 0, 0),
             type: AxisType.Time,
             axisLabel: {
               hideOverlap: true,
@@ -267,6 +269,56 @@ describe('Gantt transformProps', () => {
         symbol: ['none', 'none'],
       },
     });
+  });
+
+  it('should apply x-axis bounds even when zoomable is false', () => {
+    const chartProps = new ChartProps({
+      ...chartPropsConfig,
+      formData: {
+        ...formData,
+        zoomable: false,
+      },
+    });
+    const transformedProps = transformProps(
+      chartProps as EchartsGanttChartProps,
+    );
+
+    expect(transformedProps.echartOptions.dataZoom).toBe(false);
+    expect(transformedProps.echartOptions.xAxis).toEqual(
+      expect.objectContaining({
+        min: Date.UTC(2025, 1, 1, 13, 0, 0),
+        max: Date.UTC(2025, 1, 1, 20, 0, 0),
+      }),
+    );
+  });
+
+  it('should fallback to month when x-axis date unit is invalid', () => {
+    const invalidUnitChartProps = new ChartProps({
+      ...chartPropsConfig,
+      formData: {
+        ...formData,
+        xAxisDateUnit: 'invalid' as any,
+      },
+    });
+    const fallbackChartProps = new ChartProps({
+      ...chartPropsConfig,
+      formData: {
+        ...formData,
+        xAxisDateUnit: 'month',
+      },
+    });
+
+    const invalidUnitProps = transformProps(
+      invalidUnitChartProps as EchartsGanttChartProps,
+    );
+    const fallbackProps = transformProps(fallbackChartProps as EchartsGanttChartProps);
+
+    expect(invalidUnitProps.echartOptions.xAxis).toEqual(
+      expect.objectContaining({
+        min: (fallbackProps.echartOptions.xAxis as any).min,
+        max: (fallbackProps.echartOptions.xAxis as any).max,
+      }),
+    );
   });
 });
 

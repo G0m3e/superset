@@ -23,15 +23,19 @@ import {
   CustomSeriesRenderItem,
   EChartsCoreOption,
   LineSeriesOption,
+  SeriesOption,
 } from 'echarts';
 import { t } from '@apache-superset/core/translation';
 import {
+  AnnotationLayer,
   AxisType,
   CategoricalColorNamespace,
   DataRecord,
   DataRecordValue,
   getColumnLabel,
   getNumberFormatter,
+  isEventAnnotationLayer,
+  isIntervalAnnotationLayer,
   tooltipHtml,
 } from '@superset-ui/core';
 import { extendedDayjs as dayjs } from '@superset-ui/core/utils/dates';
@@ -40,6 +44,7 @@ import { CallbackDataParams } from 'echarts/types/src/util/types';
 import {
   Cartesian2dCoordSys,
   EchartsGanttChartProps,
+  GanttDateOffsetUnit,
   EchartsGanttFormData,
 } from './types';
 import { DEFAULT_FORM_DATA, TIMESERIES_CONSTANTS } from '../constants';
@@ -50,12 +55,18 @@ import {
   groupData,
 } from '../utils/series';
 import { resolveLegendLayout } from '../utils/legendLayout';
+import { parseAxisBound } from '../utils/controls';
+import { getAnnotationData } from '../utils/annotation';
 import {
   getTooltipTimeFormatter,
   getXAxisFormatter,
 } from '../utils/formatters';
 import { defaultGrid } from '../defaults';
-import { getPadding } from '../Timeseries/transformers';
+import {
+  getPadding,
+  transformEventAnnotation,
+  transformIntervalAnnotation,
+} from '../Timeseries/transformers';
 import { convertInteger } from '../utils/convertInteger';
 import { getTooltipLabels } from '../utils/tooltip';
 import { Dimension, ELEMENT_HEIGHT_SCALE } from './constants';
@@ -108,6 +119,9 @@ const renderItem: CustomSeriesRenderItem = (params, api) => {
   };
 };
 
+const DEFAULT_DATE_OFFSET_UNIT: GanttDateOffsetUnit = 'month';
+const DATE_OFFSET_UNITS: GanttDateOffsetUnit[] = ['day', 'week', 'month', 'year'];
+
 export default function transformProps(chartProps: EchartsGanttChartProps) {
   const {
     formData,
@@ -123,6 +137,7 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
   } = chartProps;
 
   const {
+    annotationLayers = [],
     startTime,
     endTime,
     yAxis,
@@ -144,7 +159,8 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
     yAxisTitleMargin,
     xAxisTitle,
     xAxisTitleMargin,
-    xAxisTimeBounds,
+    xAxisDateZoomOffset,
+    xAxisDateUnit,
     subcategories,
   }: EchartsGanttFormData = {
     ...DEFAULT_FORM_DATA,
@@ -163,6 +179,8 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
   const tooltipLabels = getTooltipLabels({ tooltipMetrics, tooltipColumns });
 
   const seriesMap = groupData(data, dimensionLabel);
+
+  const annotationData = getAnnotationData(chartProps);
 
   const seriesInCategoriesMap = new Map<
     DataRecordValue | undefined,
@@ -223,31 +241,38 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
   const tooltipTimeFormatter = getTooltipTimeFormatter(tooltipTimeFormat);
   const tooltipValuesFormatter = getNumberFormatter(tooltipValuesFormat);
 
-  const bounds: [number | undefined, number | undefined] = [
-    undefined,
-    undefined,
+  const minDate = Math.min(
+    ...data
+      .map(datum => datum[startTimeLabel])
+      .filter(startTime => startTime !== null && startTime !== undefined)
+      .map(startTime => Number(startTime)),
+  );
+  const maxDate = Math.max(
+    ...data
+      .map(datum => datum[endTimeLabel])
+      .filter(endTime => endTime !== null && endTime !== undefined)
+      .map(endTime => Number(endTime)),
+  );
+
+  const zoomBounds: [number, number] = [
+    +dayjs.utc(minDate),
+    +dayjs.utc(maxDate),
   ];
-  if (xAxisTimeBounds?.[0]) {
-    const minDate = Math.min(
-      ...data.map(datum => Number(datum[startTimeLabel] ?? 0)),
+  let [xMinDate, xMaxDate] = (xAxisDateZoomOffset || []).map(parseAxisBound);
+  const unit = DATE_OFFSET_UNITS.includes(xAxisDateUnit as GanttDateOffsetUnit)
+    ? (xAxisDateUnit as GanttDateOffsetUnit)
+    : DEFAULT_DATE_OFFSET_UNIT;
+  if (xMinDate !== null && xMinDate !== undefined) {
+    zoomBounds[0] = Math.max(
+      zoomBounds[0],
+      +dayjs().utc().startOf('day').add(xMinDate, unit),
     );
-    const time = dayjs(xAxisTimeBounds[0], 'HH:mm:ss');
-    bounds[0] = +dayjs
-      .utc(minDate)
-      .hour(time.hour())
-      .minute(time.minute())
-      .second(time.second());
   }
-  if (xAxisTimeBounds?.[1]) {
-    const maxDate = Math.min(
-      ...data.map(datum => Number(datum[endTimeLabel] ?? 0)),
+  if (xMaxDate !== null && xMaxDate !== undefined) {
+    zoomBounds[1] = Math.min(
+      zoomBounds[1],
+      +dayjs().utc().startOf('day').add(xMaxDate, unit),
     );
-    const time = dayjs(xAxisTimeBounds[1], 'HH:mm:ss');
-    bounds[1] = +dayjs
-      .utc(maxDate)
-      .hour(time.hour())
-      .minute(time.minute())
-      .second(time.second());
   }
 
   const padding = getPadding(
@@ -271,7 +296,7 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
     return seriesMap ? seriesMap.get(series) : undefined;
   };
 
-  const series: (CustomSeriesOption | LineSeriesOption)[] = Array.from(
+  const series: (CustomSeriesOption | LineSeriesOption | SeriesOption)[] = Array.from(
     seriesMap.entries(),
   )
     .map(([key, data], idx) => ({
@@ -385,6 +410,34 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
     Object.assign(padding, adjustedPadding);
   }
 
+  annotationLayers
+    .filter((layer: AnnotationLayer) => layer.show)
+    .forEach((layer: AnnotationLayer) => {
+      if (isIntervalAnnotationLayer(layer)) {
+        series.push(
+          ...transformIntervalAnnotation(
+            layer,
+            data,
+            annotationData,
+            colorScale,
+            theme,
+            sliceId,
+          ),
+        );
+      } else if (isEventAnnotationLayer(layer)) {
+        series.push(
+          ...transformEventAnnotation(
+            layer,
+            data,
+            annotationData,
+            colorScale,
+            theme,
+            sliceId,
+          ),
+        );
+      }
+    });
+
   const tooltipFormatterMap = {
     [GenericDataType.Numeric]: tooltipValuesFormatter,
     [GenericDataType.String]: undefined,
@@ -395,9 +448,8 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
   const echartOptions: EChartsCoreOption = {
     useUTC: true,
     tooltip: {
-      formatter: (params: CallbackDataParams) =>
-        tooltipHtml(
-          tooltipLabels.map(label => {
+      formatter: (params: CallbackDataParams) => {
+        const maindata = tooltipLabels.map(label => {
             const offset = Object.keys(Dimension).length;
             const dimensionNames = params.dimensionNames!.slice(offset);
             const data = (params.value as any[]).slice(offset);
@@ -407,9 +459,12 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
             const type = coltypes[idx];
 
             return [label, tooltipFormatterMap[type]?.(value) ?? value];
-          }),
+          });
+          return tooltipHtml(
+            maindata,
           dimensionLabel ? params.seriesName : undefined,
-        ),
+        );
+      }
     },
     legend: {
       ...getLegendProps(
@@ -431,8 +486,8 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
       {
         type: 'slider',
         filterMode: 'none',
-        start: TIMESERIES_CONSTANTS.dataZoomStart,
-        end: TIMESERIES_CONSTANTS.dataZoomEnd,
+        startValue: zoomBounds[0],
+        endValue: zoomBounds[1],
         bottom: TIMESERIES_CONSTANTS.zoomBottom,
       },
     ],
@@ -460,8 +515,9 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
         formatter: xAxisFormatter,
         hideOverlap: true,
       },
-      min: bounds[0],
-      max: bounds[1],
+      // Apply configured date offset bounds even when zoom is disabled.
+      min: zoomBounds[0],
+      max: zoomBounds[1],
     },
     yAxis: {
       name: yAxisTitle,
