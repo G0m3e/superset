@@ -20,6 +20,7 @@ import {
   ControlPanelConfig,
   ControlSubSectionHeader,
   sections,
+  formatSelectOptions,
   sharedControls,
 } from '@superset-ui/chart-controls';
 import { t } from '@apache-superset/core/translation';
@@ -95,6 +96,9 @@ const config: ControlPanelConfig = {
       ],
     },
     {
+      ...sections.annotationsAndLayersControls,
+    },
+    {
       ...sections.titleControls,
       controlSetRows: sections.titleControls.controlSetRows.slice(0, -1),
     },
@@ -114,18 +118,30 @@ const config: ControlPanelConfig = {
         ],
         [
           {
-            name: 'x_axis_time_bounds',
+            name: 'x_axis_date_zoom_offset',
             config: {
-              type: 'TimeRangeControl',
-              label: t('Bounds'),
+              type: 'BoundsControl',
+              label: t('X-Axis Date Offsets'),
               description: t(
-                'Bounds for the X-axis. Selected time merges with ' +
-                  'min/max date of the data. When left empty, bounds ' +
-                  'dynamically defined based on the min/max of the data.',
+                'Set start and end offsets relative to today for the initial X-axis zoom window (for example, -1 means one unit before today).',
               ),
               renderTrigger: true,
-              allowClear: true,
-              allowEmpty: [true, true],
+            },
+          },
+        ],
+        [
+          {
+            name: 'x_axis_date_unit',
+            config: {
+              type: 'SelectControl',
+              clearable: true,
+              label: t('Date Offset Unit'),
+              description: t(
+                'Time unit used to interpret the X-axis date offsets.',
+              ),
+              renderTrigger: true,
+              default: 'month',
+              choices: formatSelectOptions(['day', 'week', 'month', 'year']),
             },
           },
         ],

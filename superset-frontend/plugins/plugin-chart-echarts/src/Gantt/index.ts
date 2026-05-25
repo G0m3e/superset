@@ -17,7 +17,7 @@
  * under the License.
  */
 import { t } from '@apache-superset/core/translation';
-import { Behavior } from '@superset-ui/core';
+import { AnnotationType, Behavior } from '@superset-ui/core';
 import transformProps from './transformProps';
 import controlPanel from './controlPanel';
 import buildQuery from './buildQuery';
@@ -42,6 +42,11 @@ export default class EchartsGanttChartPlugin extends EchartsChartPlugin {
           Behavior.DrillBy,
         ],
         credits: ['https://echarts.apache.org'],
+        canBeAnnotationTypes: [AnnotationType.Event],
+        supportedAnnotationTypes: [
+          AnnotationType.Event,
+          AnnotationType.Interval,
+        ],
         name: t('Gantt Chart'),
         description: t(
           'Gantt chart visualizes important events over a time span. ' +
