@@ -17,6 +17,7 @@
  * under the License.
  */
 import {
+  AnnotationLayer,
   ChartDataResponseResult,
   ChartProps,
   QueryFormColumn,
@@ -32,8 +33,11 @@ import {
 export type EchartsGanttChartTransformedProps =
   BaseTransformedProps<EchartsGanttFormData> & CrossFilterTransformedProps;
 
+export type GanttDateOffsetUnit = 'day' | 'week' | 'month' | 'year';
+
 export type EchartsGanttFormData = QueryFormData &
   LegendFormData & {
+    annotationLayers: AnnotationLayer[];
     viz_type: 'gantt_chart';
     startTime: QueryFormColumn;
     endTime: QueryFormColumn;
@@ -51,7 +55,8 @@ export type EchartsGanttFormData = QueryFormData &
     yAxisTitle?: string;
     yAxisTitleMargin?: number;
     yAxisTitlePosition?: string;
-    xAxisTimeBounds?: [string | null, string | null];
+    xAxisDateZoomOffset?: [number | undefined | null, number | undefined | null];
+    xAxisDateUnit?: GanttDateOffsetUnit | null;
     subcategories?: boolean;
     showExtraControls?: boolean;
   };

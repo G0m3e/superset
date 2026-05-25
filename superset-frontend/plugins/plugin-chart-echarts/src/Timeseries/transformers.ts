@@ -30,6 +30,7 @@ import {
   SupersetTheme,
   TimeseriesAnnotationLayer,
   TimeseriesDataRecord,
+  DataRecord,
   ValueFormatter,
 } from '@superset-ui/core';
 import type {
@@ -405,7 +406,7 @@ export function transformSeries(
 
 export function transformFormulaAnnotation(
   layer: FormulaAnnotationLayer,
-  data: TimeseriesDataRecord[],
+  data: (TimeseriesDataRecord | DataRecord)[],
   xAxisCol: string,
   xAxisType: AxisType,
   colorScale: CategoricalColorScale,
@@ -437,7 +438,7 @@ export function transformFormulaAnnotation(
 
 export function transformIntervalAnnotation(
   layer: IntervalAnnotationLayer,
-  data: TimeseriesDataRecord[],
+  data: (TimeseriesDataRecord | DataRecord)[],
   annotationData: AnnotationData,
   colorScale: CategoricalColorScale,
   theme: SupersetTheme,
@@ -512,7 +513,7 @@ export function transformIntervalAnnotation(
 
 export function transformEventAnnotation(
   layer: EventAnnotationLayer,
-  data: TimeseriesDataRecord[],
+  data: (TimeseriesDataRecord | DataRecord)[],
   annotationData: AnnotationData,
   colorScale: CategoricalColorScale,
   theme: SupersetTheme,
@@ -588,7 +589,7 @@ export function transformEventAnnotation(
 export function transformTimeseriesAnnotation(
   layer: TimeseriesAnnotationLayer,
   markerSize: number,
-  data: TimeseriesDataRecord[],
+  data: (TimeseriesDataRecord | DataRecord)[],
   annotationData: AnnotationData,
   colorScale: CategoricalColorScale,
   sliceId?: number,
