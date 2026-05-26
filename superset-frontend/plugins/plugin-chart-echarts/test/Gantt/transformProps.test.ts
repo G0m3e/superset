@@ -291,6 +291,66 @@ describe('Gantt transformProps', () => {
     );
   });
 
+  it('should keep full axis range while narrowing initial dataZoom window', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2026-05-26T12:00:00Z'));
+
+    const wideDataChartProps = new ChartProps({
+      ...chartPropsConfig,
+      formData: {
+        ...formData,
+        zoomable: true,
+        xAxisDateZoomOffset: [-2, 6],
+        xAxisDateUnit: 'week',
+      },
+      queriesData: [
+        {
+          data: [
+            {
+              startTime: Date.UTC(2025, 0, 1, 0, 0, 0),
+              endTime: Date.UTC(2025, 0, 2, 0, 0, 0),
+              'Y Axis': 'first',
+              tooltip_column: 'tooltip value 1',
+              series: 'series value 1',
+            },
+            {
+              startTime: Date.UTC(2027, 0, 1, 0, 0, 0),
+              endTime: Date.UTC(2027, 0, 2, 0, 0, 0),
+              'Y Axis': 'second',
+              tooltip_column: 'tooltip value 2',
+              series: 'series value 2',
+            },
+          ],
+          colnames: [
+            'startTime',
+            'endTime',
+            'Y Axis',
+            'tooltip_column',
+            'series',
+          ],
+        },
+      ],
+    });
+
+    const transformedProps = transformProps(
+      wideDataChartProps as EchartsGanttChartProps,
+    );
+    const xAxis = transformedProps.echartOptions.xAxis as {
+      min: number;
+      max: number;
+    };
+    const dataZoom = transformedProps.echartOptions.dataZoom as Array<{
+      startValue: number;
+      endValue: number;
+    }>;
+
+    expect(xAxis.min).toBe(Date.UTC(2025, 0, 1, 0, 0, 0));
+    expect(xAxis.max).toBe(Date.UTC(2027, 0, 2, 0, 0, 0));
+    expect(dataZoom[0].startValue).toBeGreaterThan(xAxis.min);
+    expect(dataZoom[0].endValue).toBeLessThan(xAxis.max);
+
+    jest.useRealTimers();
+  });
+
   it('should fallback to month when x-axis date unit is invalid', () => {
     const invalidUnitChartProps = new ChartProps({
       ...chartPropsConfig,
