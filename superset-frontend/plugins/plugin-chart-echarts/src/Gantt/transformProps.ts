@@ -171,6 +171,17 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
     ...DEFAULT_FORM_DATA,
     ...formData,
   };
+  const rawFormData = formData as Record<string, unknown>;
+  const xAxisDateZoomOffsetValue =
+    xAxisDateZoomOffset ??
+    (rawFormData.x_axis_date_zoom_offset as
+      | EchartsGanttFormData['xAxisDateZoomOffset']
+      | undefined);
+  const xAxisDateUnitValue =
+    xAxisDateUnit ??
+    (rawFormData.x_axis_date_unit as
+      | EchartsGanttFormData['xAxisDateUnit']
+      | undefined);
 
   const { setControlValue, onLegendStateChanged } = hooks;
 
@@ -259,26 +270,31 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
       .map(endTime => Number(endTime)),
   );
 
-  const zoomBounds: [number, number] = [
+  const axisBounds: [number, number] = [
     +dayjs.utc(minDate),
     +dayjs.utc(maxDate),
   ];
-  let [xMinDate, xMaxDate] = (xAxisDateZoomOffset || []).map(parseAxisBound);
-  const unit = DATE_OFFSET_UNITS.includes(xAxisDateUnit as GanttDateOffsetUnit)
-    ? (xAxisDateUnit as GanttDateOffsetUnit)
+  const zoomWindow: [number, number] = [...axisBounds];
+  let [xMinDate, xMaxDate] = (xAxisDateZoomOffsetValue || []).map(parseAxisBound);
+  const unit = DATE_OFFSET_UNITS.includes(
+    xAxisDateUnitValue as GanttDateOffsetUnit,
+  )
+    ? (xAxisDateUnitValue as GanttDateOffsetUnit)
     : DEFAULT_DATE_OFFSET_UNIT;
   if (xMinDate !== null && xMinDate !== undefined) {
-    zoomBounds[0] = Math.max(
-      zoomBounds[0],
+    zoomWindow[0] = Math.max(
+      zoomWindow[0],
       +dayjs().utc().startOf('day').add(xMinDate, unit),
     );
   }
   if (xMaxDate !== null && xMaxDate !== undefined) {
-    zoomBounds[1] = Math.min(
-      zoomBounds[1],
+    zoomWindow[1] = Math.min(
+      zoomWindow[1],
       +dayjs().utc().startOf('day').add(xMaxDate, unit),
     );
   }
+  const xAxisMin = zoomable ? axisBounds[0] : zoomWindow[0];
+  const xAxisMax = zoomable ? axisBounds[1] : zoomWindow[1];
 
   const padding = getPadding(
     showLegend,
@@ -488,8 +504,8 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
       {
         type: 'slider',
         filterMode: 'none',
-        startValue: zoomBounds[0],
-        endValue: zoomBounds[1],
+        startValue: zoomWindow[0],
+        endValue: zoomWindow[1],
         bottom: TIMESERIES_CONSTANTS.zoomBottom,
       },
     ],
@@ -517,9 +533,10 @@ export default function transformProps(chartProps: EchartsGanttChartProps) {
         formatter: xAxisFormatter,
         hideOverlap: true,
       },
-      // Apply configured date offset bounds even when zoom is disabled.
-      min: zoomBounds[0],
-      max: zoomBounds[1],
+      // When zoom is enabled, keep the full data range on the axis so the
+      // slider can represent a narrower initial window from date offsets.
+      min: xAxisMin,
+      max: xAxisMax,
     },
     yAxis: {
       name: yAxisTitle,
