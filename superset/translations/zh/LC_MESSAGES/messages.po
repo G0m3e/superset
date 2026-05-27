@@ -19,7 +19,7 @@ msgstr ""
 "Project-Id-Version: Apache Superset 0.22.1\n"
 "Report-Msgid-Bugs-To: zhouyao94@qq.com\n"
 "POT-Creation-Date: 2026-02-06 23:58-0800\n"
-"PO-Revision-Date: 2026-05-27 14:00+0800\n"
+"PO-Revision-Date: 2026-05-27 16:30+0800\n"
 "Last-Translator: cdmikechen\n"
 "Language-Team: zh <benedictjin2016@gmail.com>\n"
 "Language: zh\n"
@@ -164,15 +164,15 @@ msgstr "「%s」已设为系统默认主题"
 
 #, python-format
 msgid "% calculation"
-msgstr "占比 %"
+msgstr "% 占比"
 
 #, python-format
 msgid "% of parent"
-msgstr "父级 %"
+msgstr "占父级比例"
 
 #, python-format
 msgid "% of total"
-msgstr "总计 %"
+msgstr "占总计比例"
 
 #, python-format
 msgid "%(dialect)s cannot be used as a data source for security reasons."
@@ -252,15 +252,15 @@ msgstr "%s 已选定"
 
 #, python-format
 msgid "%s Selected (%s Physical, %s Virtual)"
-msgstr "%s 个被选中 (%s 个实体, %s 个虚拟)"
+msgstr "%s 项已选（%s 个物理表，%s 个虚拟数据集）"
 
 #, python-format
 msgid "%s Selected (Physical)"
-msgstr "%s 个被选中（实体）"
+msgstr "%s 项已选（物理表）"
 
 #, python-format
 msgid "%s Selected (Virtual)"
-msgstr "%s 个被选中（虚拟）"
+msgstr "%s 项已选（虚拟数据集）"
 
 #, python-format
 msgid "%s URL"
@@ -390,7 +390,7 @@ msgid "... and %s others"
 msgstr "……另有 %s 项"
 
 msgid "0 Selected"
-msgstr "0个被选中"
+msgstr "未选择"
 
 msgid "1 calendar day frequency"
 msgstr "1个日历日的频率"
@@ -860,13 +860,11 @@ msgstr "自动匹配格式化"
 msgid "Add"
 msgstr "新增"
 
-#, fuzzy
 msgid "Add BCC Recipients"
-msgstr "最近"
+msgstr "添加密送收件人"
 
-#, fuzzy
 msgid "Add CC Recipients"
-msgstr "最近"
+msgstr "添加抄送收件人"
 
 msgid "Add CSS template"
 msgstr "新增CSS模板"
@@ -937,9 +935,8 @@ msgstr "新增注释"
 msgid "Add annotation layer"
 msgstr "新增注释层"
 
-#, fuzzy
 msgid "Add another notification method"
-msgstr "新增通知方法"
+msgstr "添加其他通知方式"
 
 msgid "Add calculated columns to dataset in \"Edit datasource\" modal"
 msgstr "在“编辑数据源”对话框中向数据集添加计算列"
@@ -969,15 +966,14 @@ msgid "Add dataset columns here to group the pivot table columns."
 msgstr "必须是分组列"
 
 msgid "Add delivery method"
-msgstr "新增通知方法"
+msgstr "添加发送方式"
 
 #, fuzzy
 msgid "Add description of your tag"
 msgstr "为您的查询写一段描述"
 
-#, fuzzy
 msgid "Add display control"
-msgstr "显示配置"
+msgstr "添加显示控件"
 
 #, fuzzy
 msgid "Add divider"
@@ -2050,9 +2046,8 @@ msgstr "轴标题边距"
 msgid "Axis title position"
 msgstr "轴标题的位置"
 
-#, fuzzy
 msgid "BCC recipients"
-msgstr "最近"
+msgstr "密送收件人"
 
 msgid "BOOLEAN"
 msgstr "布尔值"
@@ -2316,9 +2311,8 @@ msgstr "使用度量值作为排序关键字"
 msgid "CANCEL"
 msgstr "取消"
 
-#, fuzzy
 msgid "CC recipients"
-msgstr "最近"
+msgstr "抄送收件人"
 
 #, fuzzy
 msgid "COPY QUERY"
@@ -2838,22 +2832,20 @@ msgstr "[标签] 的选择项必须出现在 [Group By]"
 msgid "Choice of [Point Radius] must be present in [Group By]"
 msgstr "[点半径] 的选择项必须出现在 [Group By]"
 
-#, fuzzy
 msgid "Choose a chart for displaying on the map"
-msgstr "选择图表或看板，不能都全部选择"
+msgstr "选择要在地图上展示的图表"
 
 msgid "Choose a chart or dashboard not both"
-msgstr "选择图表或看板，不能都全部选择"
+msgstr "请选择图表或看板，二者不可同时选择"
 
 msgid "Choose a database..."
-msgstr "选择数据库"
+msgstr "选择数据库…"
 
 msgid "Choose a dataset"
-msgstr "选择数据源"
+msgstr "选择数据集"
 
-#, fuzzy
 msgid "Choose a delimiter"
-msgstr "选择数据源"
+msgstr "选择分隔符"
 
 msgid "Choose a metric for right axis"
 msgstr "为右轴选择一个指标"
@@ -2867,9 +2859,8 @@ msgstr "选择一个源"
 msgid "Choose a target"
 msgstr "选择一个目标"
 
-#, fuzzy
 msgid "Choose already exists"
-msgstr "标签已存在"
+msgstr "若已存在则"
 
 msgid "Choose chart type"
 msgstr "选择图表类型"
@@ -2878,9 +2869,8 @@ msgstr "选择图表类型"
 msgid "Choose columns to be parsed as dates"
 msgstr "应作为日期解析的列的逗号分隔列表。"
 
-#, fuzzy
 msgid "Choose columns to read"
-msgstr "要读取的列"
+msgstr "选择要读取的列"
 
 msgid ""
 "Choose from existing dashboard filters and select a value to refine your "
@@ -2890,18 +2880,16 @@ msgstr "从现有看板筛选器中选择取值，以细化报告结果。"
 msgid "Choose how many X-Axis labels to show"
 msgstr "选择 X 轴显示的标签数量"
 
-#, fuzzy
 msgid "Choose index column"
-msgstr "索引字段"
+msgstr "选择索引列"
 
 msgid ""
 "Choose layers to hide from all deck.gl Multiple Layer charts in this "
 "dashboard."
 msgstr "选择在此看板所有 deck.gl 多图层图表中隐藏的图层"
 
-#, fuzzy
 msgid "Choose notification method and recipients."
-msgstr "新增通知方法"
+msgstr "选择通知方式与收件人"
 
 #, fuzzy, python-format
 msgid "Choose numbers between %(min)s and %(max)s"
@@ -2914,9 +2902,8 @@ msgstr "从左侧的面板中选择一个可用的数据库"
 msgid "Choose one of the available databases on the left panel."
 msgstr "从左侧的面板中选择一个可用的数据库"
 
-#, fuzzy
 msgid "Choose sheet name"
-msgstr "Sheet名称"
+msgstr "选择工作表名称"
 
 msgid "Choose the annotation layer type"
 msgstr "选择注释层类型"
@@ -2945,9 +2932,8 @@ msgid ""
 " based on a categorical color palette"
 msgstr "选择按指标为国家着色，或按分类色板分配颜色"
 
-#, fuzzy
 msgid "Choose..."
-msgstr "选择数据库"
+msgstr "请选择…"
 
 msgid "Chord Diagram"
 msgstr "弦图"
@@ -4861,61 +4847,54 @@ msgstr "取消"
 msgid "Display Name"
 msgstr "显示名称"
 
-#, fuzzy
 msgid "Display all"
-msgstr "显示名称"
+msgstr "显示全部"
 
-#, fuzzy
 msgid "Display column in the chart"
-msgstr "显示列级别合计"
+msgstr "在图表中显示该列"
 
 #, fuzzy
 msgid "Display column level subtotal"
 msgstr "显示列级别小计"
 
 msgid "Display column level total"
-msgstr "显示列级别合计"
+msgstr "显示列合计"
 
-#, fuzzy
 msgid "Display column name"
-msgstr "显示列级别合计"
+msgstr "显示列名"
 
 msgid "Display configuration"
 msgstr "显示配置"
 
-#, fuzzy
 msgid "Display control configuration"
-msgstr "显示配置"
+msgstr "显示控件配置"
 
 msgid "Display control has default value"
-msgstr "筛选器默认值"
+msgstr "显示控件含默认值"
 
-#, fuzzy
 msgid "Display control name"
-msgstr "显示列级别合计"
+msgstr "显示控件名称"
 
 msgid "Display control settings"
-msgstr "筛选器设置"
+msgstr "显示控件设置"
 
 #, fuzzy
 msgid "Display control type"
-msgstr "显示列级别合计"
+msgstr "显示控件类型"
 
-#, fuzzy
 msgid "Display controls"
-msgstr "显示配置"
+msgstr "显示控件"
 
 #, python-format
 msgid "Display controls (%d)"
-msgstr "显示控件 (%d)"
+msgstr "显示控件（%d）"
 
 #, python-format
 msgid "Display controls (%s)"
-msgstr "显示控件 (%s)"
+msgstr "显示控件（%s）"
 
-#, fuzzy
 msgid "Display cumulative total at end"
-msgstr "显示列级别合计"
+msgstr "在末尾显示累计合计"
 
 msgid "Display headers for each column at the top of the matrix"
 msgstr "在矩阵顶部显示每列的标题"
@@ -5984,7 +5963,7 @@ msgid "Extra Parameters"
 msgstr "额外参数"
 
 msgid "Extra data for JS"
-msgstr "给JS的额外数据"
+msgstr "供 JavaScript 使用的附加数据"
 
 msgid ""
 "Extra data to specify table metadata. Currently supports metadata of the "
@@ -7911,7 +7890,7 @@ msgid "Manage email report"
 msgstr "管理邮件报告"
 
 msgid "Manage your databases"
-msgstr "管理你的数据库"
+msgstr "管理数据库"
 
 msgid "Mandatory"
 msgstr "必填参数"
@@ -8367,9 +8346,8 @@ msgstr "倍数"
 msgid "Must be unique"
 msgstr "需要唯一"
 
-#, fuzzy
 msgid "Must choose either a chart or a dashboard"
-msgstr "选择图表或看板，不能都全部选择"
+msgstr "必须选择图表或看板之一"
 
 msgid "Must have a [Group By] column to have 'count' as the [Label]"
 msgstr "[Group By] 列必须要有 ‘count’字段作为 [标签]"
@@ -9263,7 +9241,7 @@ msgid "Parameters related to the view and perspective on the map"
 msgstr "与地图上的视图和透视相关的参数"
 
 msgid "Parent"
-msgstr "父类"
+msgstr "父级"
 
 #, fuzzy, python-format
 msgid "Parsing error: %(error)s"
@@ -9398,10 +9376,10 @@ msgid "Personal info"
 msgstr "个人信息"
 
 msgid "Physical"
-msgstr "实体"
+msgstr "物理表"
 
 msgid "Physical (table or view)"
-msgstr "实体（表或视图）"
+msgstr "物理表（表或视图）"
 
 msgid "Pick a dimension from which categorical colors are defined"
 msgstr "选择定义分类颜色的维度"
@@ -10963,13 +10941,11 @@ msgstr "选择看板"
 msgid "Select a database"
 msgstr "删除数据库"
 
-#, fuzzy
 msgid "Select a database table and create dataset"
 msgstr "选择数据库表并创建数据集"
 
-#, fuzzy
 msgid "Select a database table."
-msgstr "选择数据库表"
+msgstr "选择数据库中的表"
 
 msgid "Select a database to connect"
 msgstr "选择将要连接的数据库"
@@ -11113,19 +11089,17 @@ msgstr "选择看板"
 msgid "Select database"
 msgstr "删除数据库"
 
-#, fuzzy
 msgid "Select database or type to search databases"
-msgstr "选择数据库或输入名称来搜索"
+msgstr "选择数据库，或输入关键字搜索"
 
 msgid ""
 "Select databases require additional fields to be completed in the Advanced "
 "tab to successfully connect the database. Learn what requirements your "
 "databases has "
-msgstr "选择数据库需要在高级选项中完成额外的字段才能成功连接数据库。了解您的数据库需要什么："
+msgstr "部分数据库需在「高级」选项卡中填写额外字段才能连接成功。了解各数据库的要求："
 
-#, fuzzy
 msgid "Select dataset source"
-msgstr "选择数据源"
+msgstr "选择数据集来源"
 
 #, fuzzy
 msgid "Select datetime column"
@@ -11249,9 +11223,8 @@ msgstr "选择主题"
 msgid "Select tab"
 msgstr "反选所有"
 
-#, fuzzy
 msgid "Select table or type to search tables"
-msgstr "选择表或输入表名来搜索"
+msgstr "选择数据表，或输入关键字搜索"
 
 #, fuzzy
 msgid "Select the Annotation Layer you would like to use."
@@ -11553,9 +11526,8 @@ msgstr "显示时间戳"
 msgid "Show Tooltip Labels"
 msgstr "显示提示标签"
 
-#, fuzzy
 msgid "Show Total"
-msgstr "显示总计"
+msgstr "显示合计"
 
 msgid "Show Trend Line"
 msgstr "显示趋势线"
@@ -11691,9 +11663,8 @@ msgstr "显示标记"
 msgid "Show the value on top of the bar"
 msgstr "在柱子上方显示值"
 
-#, fuzzy
 msgid "Show total"
-msgstr "显示总计"
+msgstr "显示合计"
 
 msgid ""
 "Show total aggregations of selected metrics. Note that row limit does not "
@@ -12336,7 +12307,7 @@ msgid "System default theme removed"
 msgstr "已移除系统默认主题"
 
 msgid "TABLES"
-msgstr "表"
+msgstr "数据表"
 
 #, fuzzy
 msgid "TEMPORAL_RANGE"
@@ -12359,7 +12330,7 @@ msgid "Tab title"
 msgstr "选项卡标题"
 
 msgid "Table"
-msgstr "表"
+msgstr "表格"
 
 #, python-format
 msgid "Table %(table)s wasn't found in the database %(db)s"
@@ -12368,15 +12339,14 @@ msgstr "在数据库 %(db)s 中找不到表 %(table)s"
 msgid "Table Name"
 msgstr "表名"
 
-#, fuzzy
 msgid "Table V2"
-msgstr "表"
+msgstr "表格 V2"
 
 #, python-format
 msgid ""
 "Table [%(table)s] could not be found, please double check your database "
 "connection, schema, and table name"
-msgstr "找不到表 [%(table)s]，请仔细检查数据库连接、Schema 与表名"
+msgstr "找不到表 [%(table)s]，请检查数据库连接、Schema 与表名"
 
 msgid ""
 "Table already exists. You can change your 'if table already exists' strategy"
@@ -12386,11 +12356,9 @@ msgstr "表已经存在您可以更改“如果表已存在”策略以追加或
 msgid "Table cache timeout"
 msgstr "数据库表缓存超时"
 
-#, fuzzy
 msgid "Table columns"
 msgstr "表的列"
 
-#, fuzzy
 msgid "Table name"
 msgstr "表名"
 
@@ -14958,12 +14926,11 @@ msgstr "已查看 %s"
 msgid "Viewport"
 msgstr "视口"
 
-#, fuzzy
 msgid "Virtual"
-msgstr "虚拟"
+msgstr "虚拟数据集"
 
 msgid "Virtual (SQL)"
-msgstr "虚拟（SQL）"
+msgstr "虚拟数据集（SQL）"
 
 msgid "Virtual dataset query cannot be empty"
 msgstr "虚拟数据集查询不能为空"
@@ -16628,9 +16595,8 @@ msgstr "重启"
 msgid "recent"
 msgstr "最近"
 
-#, fuzzy
 msgid "recipients"
-msgstr "最近"
+msgstr "收件人"
 
 msgid "report"
 msgstr "报告"
@@ -16733,7 +16699,7 @@ msgid "temporal type icon"
 msgstr "时间类型图标"
 
 msgid "textarea"
-msgstr "文本区域"
+msgstr "多行文本"
 
 #, fuzzy
 msgid "theme"
