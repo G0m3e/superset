@@ -202,6 +202,8 @@ RUN mkdir -p /app/data && chown -R superset:superset /app/data
 
 # Copy compiled things from previous stages
 COPY --from=superset-node /app/superset/static/assets superset/static/assets
+# webpack emits service-worker beside assets/ (see superset-frontend/webpack.config.js); spa.html registers it
+COPY --from=superset-node --optional /app/superset/static/service-worker.js superset/static/service-worker.js
 
 # TODO, when the next version comes out, use --exclude superset/translations
 COPY superset superset
